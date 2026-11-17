@@ -32,7 +32,7 @@
 
 ## Privacy by design
 
-- No backend, no analytics, no storage: everything runs client-side.
+- No backend and no analytics: everything runs client-side. Only your language and theme choice are saved, in your own browser.
 - Log files are read with the File API and never uploaded.
 - The breach check sends only the first 5 characters of the password's SHA-1 hash.
 
