@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NetSec Toolkit</title>
+  <meta name="description" content="Free, client-side networking and defensive security tools: subnet calculator, security headers audit, password checker, firewall generator, hardening audit, auth.log analyser and uptime monitor." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z' fill='%235865F2'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <a class="brand" href="#home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z" /></svg>
+        <span>NetSec<b>Toolkit</b></span>
+      </a>
+      <nav aria-label="Tools">
+        <p class="nav-group">Networking</p>
+        <a href="#subnet">Subnet Calculator</a>
+        <a href="#firewall">Firewall Rule Generator</a>
+        <p class="nav-group">Web Security</p>
+        <a href="#headers">Security Headers</a>
+        <a href="#password">Password Strength</a>
+        <p class="nav-group">Operations</p>
+        <a href="#hardening">Hardening Audit</a>
+        <a href="#logs">Auth Log Analyzer</a>
+        <a href="#monitor">Uptime Monitor</a>
+      </nav>
+      <p class="sidebar-foot">100% client-side · nothing you enter is stored or uploaded</p>
+    </aside>
+
+    <main>
+      <!-- HOME -->
+      <section id="home" class="tool">
+        <header class="hero">
+          <p class="eyebrow">Sysadmin &amp; defensive security</p>
+          <h1>NetSec Toolkit</h1>
+          <p class="lead">Seven practical tools for network administration and defensive security, running entirely in your browser.</p>
+        </header>
+        <div class="cards">
+          <a class="card" href="#subnet"><h3>Subnet Calculator</h3><p>IPv4 &amp; IPv6 ranges, masks and subnetting.</p></a>
+          <a class="card" href="#firewall"><h3>Firewall Rule Generator</h3><p>Ready-to-run iptables, nftables and UFW rules.</p></a>
+          <a class="card" href="#headers"><h3>Security Headers</h3><p>Grade HTTP response headers and get fixes.</p></a>
+          <a class="card" href="#password"><h3>Password Strength</h3><p>Crack-time estimate and private breach check.</p></a>
+          <a class="card" href="#hardening"><h3>Hardening Audit</h3><p>Generate a Linux audit script with an HTML report.</p></a>
+          <a class="card" href="#logs"><h3>Auth Log Analyzer</h3><p>Spot SSH brute force in auth.log.</p></a>
+          <a class="card" href="#monitor"><h3>Uptime Monitor</h3><p>Check services now, alert on Discord or Telegram.</p></a>
+        </div>
+      </section>
+
+      <!-- 1. SUBNET -->
+      <section id="subnet" class="tool" hidden>
+        <header><h2>Subnet Calculator</h2><p>Enter an address with a prefix or mask: <code>192.168.1.10/24</code>, <code>10.0.0.5 255.255.252.0</code> or <code>2001:db8::1/64</code>.</p></header>
+        <form class="panel row" id="subnet-form">
+          <label class="grow">Address<input id="subnet-input" value="192.168.1.10/24" autocomplete="off" spellcheck="false" /></label>
+          <button>Calculate</button>
+        </form>
+        <p class="error" id="subnet-error" role="alert"></p>
+        <div id="subnet-result"></div>
+        <form class="panel row" id="split-form" hidden>
+          <label class="grow">Split into subnets of prefix<input id="split-prefix" type="number" min="1" max="32" value="26" /></label>
+          <button>Split</button>
+        </form>
+        <div id="split-result"></div>
+      </section>
+
+      <!-- 2. HEADERS -->
+      <section id="headers" class="tool" hidden>
+        <header><h2>Security Headers Analyzer</h2><p>Paste the response headers of a site. Get them with <code>curl -sI https://example.com</code> or from your browser's DevTools → Network tab.</p></header>
+        <div class="panel">
+          <label>Response headers<textarea id="headers-input" rows="9" spellcheck="false" placeholder="HTTP/2 200&#10;server: nginx/1.18.0&#10;content-type: text/html&#10;strict-transport-security: max-age=31536000"></textarea></label>
+          <div class="actions"><button id="headers-run">Analyze</button><button class="ghost" id="headers-sample" type="button">Load example</button></div>
+        </div>
+        <div id="headers-result"></div>
+      </section>
+
+      <!-- 3. PASSWORD -->
+      <section id="password" class="tool" hidden>
+        <header><h2>Password Strength Checker</h2><p>The strength estimate runs locally. The breach check only sends the first 5 characters of the password's SHA-1 hash (k-anonymity), never the password itself.</p></header>
+        <div class="panel">
+          <label>Password<span class="row"><input id="pw-input" type="password" autocomplete="off" class="grow" /><button class="ghost" id="pw-toggle" type="button">Show</button></span></label>
+          <div class="meter" aria-hidden="true"><span id="pw-bar"></span></div>
+          <div id="pw-result" aria-live="polite"></div>
+          <div class="actions"><button id="pw-pwned" type="button">Check known breaches</button></div>
+          <p id="pw-pwned-result" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- 4. FIREWALL -->
+      <section id="firewall" class="tool" hidden>
+        <header><h2>Firewall Rule Generator</h2><p>Default-deny inbound policy that allows only the services you select. Test from a console session, not only over SSH.</p></header>
+        <form class="panel" id="fw-form">
+          <fieldset><legend>Allowed services</legend><div class="checks" id="fw-services"></div></fieldset>
+          <div class="grid2">
+            <label>Restrict SSH to source (optional CIDR)<input id="fw-ssh-src" placeholder="192.168.1.0/24" /></label>
+            <label>Custom ports (e.g. <code>8080/tcp, 51820/udp</code>)<input id="fw-custom" placeholder="8080/tcp" /></label>
+          </div>
+          <label class="inline"><input type="checkbox" id="fw-icmp" checked /> Allow ping (ICMP echo)</label>
+        </form>
+        <p class="error" id="fw-error" role="alert"></p>
+        <div class="tabs" role="tablist" id="fw-tabs">
+          <button role="tab" data-fmt="iptables" aria-selected="true">iptables</button>
+          <button role="tab" data-fmt="nftables" aria-selected="false">nftables</button>
+          <button role="tab" data-fmt="ufw" aria-selected="false">UFW</button>
+        </div>
+        <div class="code-wrap"><pre id="fw-output"></pre><div class="code-actions"><button class="ghost" data-copy="fw-output">Copy</button><button class="ghost" id="fw-download">Download</button></div></div>
+      </section>
+
+      <!-- 5. HARDENING -->
+      <section id="hardening" class="tool" hidden>
+        <header><h2>Linux Hardening Audit</h2><p>Pick the checks, download the script and run it on your server. It is read-only: it reports findings and changes nothing.</p></header>
+        <div class="panel">
+          <fieldset><legend>Checks</legend><div class="checks" id="hd-checks"></div></fieldset>
+        </div>
+        <div class="code-wrap"><pre id="hd-output"></pre><div class="code-actions"><button class="ghost" data-copy="hd-output">Copy</button><button class="ghost" id="hd-download">Download audit.sh</button></div></div>
+        <p class="hint">Run: <code>sudo bash audit.sh --html report.html</code> — prints coloured results and writes an HTML report.</p>
+      </section>
+
+      <!-- 6. LOGS -->
+      <section id="logs" class="tool" hidden>
+        <header><h2>Auth Log Analyzer</h2><p>Paste or open <code>/var/log/auth.log</code> (Debian/Ubuntu) or <code>/var/log/secure</code> (RHEL). The file is processed in your browser and never uploaded.</p></header>
+        <div class="panel">
+          <label>Log content<textarea id="log-input" rows="9" spellcheck="false" placeholder="Nov 17 08:12:01 srv sshd[1234]: Failed password for root from 203.0.113.5 port 52144 ssh2"></textarea></label>
+          <div class="actions">
+            <label class="file-btn">Open file<input type="file" id="log-file" accept=".log,.txt,text/plain" /></label>
+            <label class="inline">Brute-force threshold <input type="number" id="log-threshold" min="1" value="5" class="small" /></label>
+            <button id="log-run">Analyze</button>
+            <button class="ghost" id="log-sample" type="button">Load example</button>
+          </div>
+        </div>
+        <div id="log-result"></div>
+      </section>
+
+      <!-- 7. MONITOR -->
+      <section id="monitor" class="tool" hidden>
+        <header><h2>Uptime Monitor</h2><p>Check your services now from the browser, then generate a cron script that alerts you when one goes down.</p></header>
+        <div class="panel">
+          <label>URLs (one per line)<textarea id="mon-urls" rows="4" spellcheck="false">https://github.com
+https://example.com</textarea></label>
+          <div class="actions"><button id="mon-run">Check now</button></div>
+          <p class="hint">Browsers hide status codes from other sites, so this check shows whether a host answers, not whether it returns an error page. The generated script checks real HTTP status codes.</p>
+        </div>
+        <div id="mon-result"></div>
+        <div class="panel">
+          <div class="grid2">
+            <label>Alert channel<select id="mon-channel"><option value="none">Log only</option><option value="discord">Discord webhook</option><option value="telegram">Telegram bot</option></select></label>
+            <label id="mon-discord-wrap" hidden>Discord webhook URL<input id="mon-discord" placeholder="https://discord.com/api/webhooks/…" /></label>
+            <label id="mon-tg-token-wrap" hidden>Telegram bot token<input id="mon-tg-token" placeholder="123456:ABC…" /></label>
+            <label id="mon-tg-chat-wrap" hidden>Telegram chat ID<input id="mon-tg-chat" placeholder="123456789" /></label>
+          </div>
+          <p class="hint">Tip: leave secrets empty here and export <code>DISCORD_WEBHOOK</code> or <code>TELEGRAM_TOKEN</code> on the server instead.</p>
+        </div>
+        <p class="error" id="mon-error" role="alert"></p>
+        <div class="code-wrap"><pre id="mon-output"></pre><div class="code-actions"><button class="ghost" data-copy="mon-output">Copy</button><button class="ghost" id="mon-download">Download monitor.sh</button></div></div>
+      </section>
+
+      <footer class="foot">Built by <a href="https://github.com/jheremysebastian17">Jheremy Sánchez</a> · <a href="https://github.com/jheremysebastian17/netsec-toolkit">Source on GitHub</a></footer>
+    </main>
+  </div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
