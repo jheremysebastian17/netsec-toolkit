@@ -7,6 +7,7 @@ import { toIptables, toNftables, toUfw } from '../js/firewall.js';
 import { buildAuditScript, CHECKS } from '../js/hardening.js';
 import { analyzeAuthLog, blockCommands } from '../js/logs.js';
 import { normalizeUrl, buildMonitorScript } from '../js/monitor.js';
+import { t, setLang, _dictsForTests } from '../js/i18n.js';
 
 let passed = 0;
 const test = (name, fn) => { fn(); passed++; console.log(`ok - ${name}`); };
@@ -137,6 +138,35 @@ test('Monitor script', () => {
   assert.match(s, /'https:\/\/a\.com\/it'\\''s'/, 'single quotes must be shell-escaped');
   assert.match(s, /DISCORD_WEBHOOK='https:\/\/discord\.com\/api\/webhooks\/1\/x'/);
   assert.throws(() => buildMonitorScript({ urls: [] }));
+});
+
+test('Translations are complete', () => {
+  const { en, ...others } = _dictsForTests;
+  const ref = Object.keys(others.es).sort();
+  for (const [code, d] of Object.entries(others)) {
+    assert.deepEqual(Object.keys(d).sort(), ref, `${code} keys differ from es`);
+  }
+  for (const k of Object.keys(en)) assert.ok(k in others.es, `en-only key "${k}" missing in es`);
+  // Every message a tool can emit must have a translation.
+  const emitted = new Set([
+    ...CHECKS.map((c) => c.name),
+    ...auditHeaders(parseHeaders('server: x/1\nx-powered-by: y\nset-cookie: a=1\nreferrer-policy: unsafe-url\ncontent-security-policy: script-src \'unsafe-inline\'')).flatMap((r) => [r.message, r.fix]),
+    ...auditHeaders(parseHeaders('strict-transport-security: max-age=1')).map((r) => r.message),
+    ...auditHeaders(parseHeaders('strict-transport-security: max-age=99999999\nx-frame-options: DENY\nx-content-type-options: nosniff\npermissions-policy: a=()\nset-cookie: a=1; Secure; HttpOnly; SameSite=Lax')).map((r) => r.message),
+    ...['aaa111', 'abcdefghijklmnop', 'password', '12345678901234'].flatMap((p) => [analyzePassword(p).label, ...analyzePassword(p).issues]),
+  ].filter((s) => s && /[a-z] [a-z]/i.test(s) && !/^[\w-]+: /.test(s) && !s.startsWith('Set-Cookie')));
+  for (const s of emitted) assert.ok(s in others.es, `untranslated message: "${s}"`);
+});
+
+test('Translator fills params and falls back', () => {
+  setLang('es');
+  assert.equal(t('Score {n}/100', { n: 80 }), 'Puntuación 80/100');
+  assert.equal(formatDuration(7200, t), '2 horas');
+  assert.equal(t('no-such-key'), 'no-such-key');
+  setLang('de');
+  assert.equal(t('Copy'), 'Kopieren');
+  setLang('xx');
+  assert.equal(t('Copy'), 'Copy');
 });
 
 console.log(`\n${passed} tests passed`);

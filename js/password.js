@@ -35,17 +35,20 @@ export function analyzePassword(pw) {
   return { bits: Math.round(bits), seconds, label, issues };
 }
 
-export function formatDuration(s) {
-  if (!Number.isFinite(s) || s > 3.15e16) return 'billions of years';
-  if (s < 1) return 'instantly';
+const plain = (k, p = {}) => k.replace(/\{(\w+)\}/g, (m, x) => (x in p ? p[x] : m));
+
+// t is the UI translator; defaults to English so the module stays usable without i18n.
+export function formatDuration(s, t = plain, fmt = (n) => n.toLocaleString('en-US')) {
+  if (!Number.isFinite(s) || s > 3.15e16) return t('billions of years');
+  if (s < 1) return t('instantly');
   const units = [['year', 31557600], ['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]];
   for (const [name, size] of units) {
     if (s >= size) {
       const v = Math.floor(s / size);
-      return `${v.toLocaleString('en-US')} ${name}${v === 1 ? '' : 's'}`;
+      return t(`{n} ${name}${v === 1 ? '' : 's'}`, { n: fmt(v) });
     }
   }
-  return 'instantly';
+  return t('instantly');
 }
 
 export async function sha1Hex(text) {

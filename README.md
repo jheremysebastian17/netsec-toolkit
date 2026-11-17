@@ -24,6 +24,12 @@
 | **Auth Log Analyzer** | Parses `auth.log` / `secure`, ranks brute-force IPs, flags successful logins after attacks, and outputs block rules. |
 | **Uptime Monitor** | Checks services from the browser and generates a cron script that alerts on Discord or Telegram when state changes. |
 
+## Features
+
+- **5 languages:** Español, English, Català, Français, Deutsch — remembers your choice and follows the browser language on first visit.
+- **Light / dark theme** toggle, defaulting to the system preference.
+- **Responsive** layout for phones, tablets and desktops (sidebar collapses into a scrolling tab bar; wide tables turn into cards).
+
 ## Privacy by design
 
 - No backend, no analytics, no storage: everything runs client-side.
@@ -53,7 +59,8 @@ node tests/run.mjs
 ```
 index.html        UI and layout
 css/style.css     Theme (light/dark), responsive layout
-js/app.js         DOM wiring and routing
+js/app.js         DOM wiring, routing, theme and language switching
+js/i18n.js        Translations (ES, EN, CA, FR, DE)
 js/*.js           One pure module per tool
 tests/run.mjs     Unit tests (Node.js)
 ```

@@ -15,7 +15,8 @@ export function parseHeaders(raw) {
 
 export function auditHeaders(h) {
   const out = [];
-  const add = (status, name, message, fix = '') => out.push({ status, name, message, fix });
+  // message/fix are i18n keys; {v} in them is filled from params.
+  const add = (status, name, message, fix = '', params = {}) => out.push({ status, name, message, fix, params });
 
   const hsts = h['strict-transport-security'];
   const hstsFix = 'Strict-Transport-Security: max-age=31536000; includeSubDomains';
@@ -23,7 +24,7 @@ export function auditHeaders(h) {
   else {
     const m = /max-age=(\d+)/i.exec(hsts);
     if (!m || +m[1] < 15552000) add('warn', 'Strict-Transport-Security', 'max-age is shorter than 6 months.', hstsFix);
-    else add('pass', 'Strict-Transport-Security', `Enabled (${hsts}).`);
+    else add('pass', 'Strict-Transport-Security', 'Enabled ({v}).', '', { v: hsts });
   }
 
   const csp = h['content-security-policy'];
@@ -46,13 +47,13 @@ export function auditHeaders(h) {
   if (h['permissions-policy']) add('pass', 'Permissions-Policy', 'Defined.');
   else add('warn', 'Permissions-Policy', 'Missing: powerful browser features are not restricted.', 'Permissions-Policy: camera=(), microphone=(), geolocation=()');
 
-  if (h.server && /\d/.test(h.server)) add('warn', 'Server', `Reveals software version (${h.server}).`, 'Hide the version, e.g. "server_tokens off;" in nginx or "ServerTokens Prod" in Apache.');
-  if (h['x-powered-by']) add('warn', 'X-Powered-By', `Reveals the technology stack (${h['x-powered-by']}).`, 'Remove the X-Powered-By header.');
+  if (h.server && /\d/.test(h.server)) add('warn', 'Server', 'Reveals software version ({v}).', 'Hide the version, e.g. "server_tokens off;" in nginx or "ServerTokens Prod" in Apache.', { v: h.server });
+  if (h['x-powered-by']) add('warn', 'X-Powered-By', 'Reveals the technology stack ({v}).', 'Remove the X-Powered-By header.', { v: h['x-powered-by'] });
 
   for (const c of h['set-cookie']) {
     const name = c.split('=')[0];
     const missing = ['Secure', 'HttpOnly', 'SameSite'].filter((f) => !new RegExp(`;\\s*${f}`, 'i').test(c));
-    if (missing.length) add('warn', `Cookie "${name}"`, `Missing flags: ${missing.join(', ')}.`, `Set-Cookie: ${name}=…; Secure; HttpOnly; SameSite=Lax`);
+    if (missing.length) add('warn', `Cookie "${name}"`, 'Missing flags: {v}.', `Set-Cookie: ${name}=…; Secure; HttpOnly; SameSite=Lax`, { v: missing.join(', ') });
     else add('pass', `Cookie "${name}"`, 'Secure, HttpOnly and SameSite set.');
   }
   return out;

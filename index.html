@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>NetSec Toolkit</title>
   <meta name="description" content="Free, client-side networking and defensive security tools: subnet calculator, security headers audit, password checker, firewall generator, hardening audit, auth.log analyser and uptime monitor." />
+  <meta name="theme-color" content="#0d1017" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z' fill='%235865F2'/></svg>" />
+  <!-- Apply the saved theme before first paint to avoid a light/dark flash. -->
+  <script>try { const t = localStorage.getItem('netsec-theme'); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -14,92 +17,105 @@
 <body>
   <div class="layout">
     <aside class="sidebar">
-      <a class="brand" href="#home">
-        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z" /></svg>
-        <span>NetSec<b>Toolkit</b></span>
-      </a>
+      <div class="topbar">
+        <a class="brand" href="#home">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z" /></svg>
+          <span>NetSec<b>Toolkit</b></span>
+        </a>
+        <div class="controls">
+          <button class="icon-btn" id="theme-toggle" type="button" data-i18n-aria="Change theme" aria-label="Change theme">
+            <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+            <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+          </button>
+          <label class="lang">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg>
+            <select id="lang-select" data-i18n-aria="Language" aria-label="Language"></select>
+          </label>
+        </div>
+      </div>
       <nav aria-label="Tools">
-        <p class="nav-group">Networking</p>
-        <a href="#subnet">Subnet Calculator</a>
-        <a href="#firewall">Firewall Rule Generator</a>
-        <p class="nav-group">Web Security</p>
-        <a href="#headers">Security Headers</a>
-        <a href="#password">Password Strength</a>
-        <p class="nav-group">Operations</p>
-        <a href="#hardening">Hardening Audit</a>
-        <a href="#logs">Auth Log Analyzer</a>
-        <a href="#monitor">Uptime Monitor</a>
+        <p class="nav-group" data-i18n="Networking">Networking</p>
+        <a href="#subnet" data-i18n="Subnet Calculator">Subnet Calculator</a>
+        <a href="#firewall" data-i18n="Firewall Rule Generator">Firewall Rule Generator</a>
+        <p class="nav-group" data-i18n="Web Security">Web Security</p>
+        <a href="#headers" data-i18n="Security Headers">Security Headers</a>
+        <a href="#password" data-i18n="Password Strength">Password Strength</a>
+        <p class="nav-group" data-i18n="Operations">Operations</p>
+        <a href="#hardening" data-i18n="Hardening Audit">Hardening Audit</a>
+        <a href="#logs" data-i18n="Auth Log Analyzer">Auth Log Analyzer</a>
+        <a href="#monitor" data-i18n="Uptime Monitor">Uptime Monitor</a>
       </nav>
-      <p class="sidebar-foot">100% client-side · nothing you enter is stored or uploaded</p>
+      <p class="sidebar-foot" data-i18n="side.note">100% client-side · nothing you enter is stored or uploaded</p>
     </aside>
 
     <main>
       <!-- HOME -->
       <section id="home" class="tool">
         <header class="hero">
-          <p class="eyebrow">Sysadmin &amp; defensive security</p>
+          <p class="eyebrow" data-i18n="hero.eyebrow">Sysadmin &amp; defensive security</p>
           <h1>NetSec Toolkit</h1>
-          <p class="lead">Seven practical tools for network administration and defensive security, running entirely in your browser.</p>
+          <p class="lead" data-i18n="hero.lead">Seven practical tools for network administration and defensive security, running entirely in your browser.</p>
         </header>
         <div class="cards">
-          <a class="card" href="#subnet"><h3>Subnet Calculator</h3><p>IPv4 &amp; IPv6 ranges, masks and subnetting.</p></a>
-          <a class="card" href="#firewall"><h3>Firewall Rule Generator</h3><p>Ready-to-run iptables, nftables and UFW rules.</p></a>
-          <a class="card" href="#headers"><h3>Security Headers</h3><p>Grade HTTP response headers and get fixes.</p></a>
-          <a class="card" href="#password"><h3>Password Strength</h3><p>Crack-time estimate and private breach check.</p></a>
-          <a class="card" href="#hardening"><h3>Hardening Audit</h3><p>Generate a Linux audit script with an HTML report.</p></a>
-          <a class="card" href="#logs"><h3>Auth Log Analyzer</h3><p>Spot SSH brute force in auth.log.</p></a>
-          <a class="card" href="#monitor"><h3>Uptime Monitor</h3><p>Check services now, alert on Discord or Telegram.</p></a>
+          <a class="card" href="#subnet"><h3 data-i18n="Subnet Calculator">Subnet Calculator</h3><p data-i18n="card.subnet"></p></a>
+          <a class="card" href="#firewall"><h3 data-i18n="Firewall Rule Generator">Firewall Rule Generator</h3><p data-i18n="card.firewall"></p></a>
+          <a class="card" href="#headers"><h3 data-i18n="Security Headers">Security Headers</h3><p data-i18n="card.headers"></p></a>
+          <a class="card" href="#password"><h3 data-i18n="Password Strength">Password Strength</h3><p data-i18n="card.password"></p></a>
+          <a class="card" href="#hardening"><h3 data-i18n="Hardening Audit">Hardening Audit</h3><p data-i18n="card.hardening"></p></a>
+          <a class="card" href="#logs"><h3 data-i18n="Auth Log Analyzer">Auth Log Analyzer</h3><p data-i18n="card.logs"></p></a>
+          <a class="card" href="#monitor"><h3 data-i18n="Uptime Monitor">Uptime Monitor</h3><p data-i18n="card.monitor"></p></a>
         </div>
       </section>
 
       <!-- 1. SUBNET -->
       <section id="subnet" class="tool" hidden>
-        <header><h2>Subnet Calculator</h2><p>Enter an address with a prefix or mask: <code>192.168.1.10/24</code>, <code>10.0.0.5 255.255.252.0</code> or <code>2001:db8::1/64</code>.</p></header>
+        <header><h2 data-i18n="Subnet Calculator">Subnet Calculator</h2><p data-i18n-html="subnet.desc"></p></header>
         <form class="panel row" id="subnet-form">
-          <label class="grow">Address<input id="subnet-input" value="192.168.1.10/24" autocomplete="off" spellcheck="false" /></label>
-          <button>Calculate</button>
+          <label class="grow"><span data-i18n="Address">Address</span><input id="subnet-input" value="192.168.1.10/24" autocomplete="off" spellcheck="false" inputmode="url" /></label>
+          <button data-i18n="Calculate">Calculate</button>
         </form>
         <p class="error" id="subnet-error" role="alert"></p>
         <div id="subnet-result"></div>
         <form class="panel row" id="split-form" hidden>
-          <label class="grow">Split into subnets of prefix<input id="split-prefix" type="number" min="1" max="32" value="26" /></label>
-          <button>Split</button>
+          <label class="grow"><span data-i18n="Split into subnets of prefix">Split into subnets of prefix</span><input id="split-prefix" type="number" min="1" max="32" value="26" inputmode="numeric" /></label>
+          <button data-i18n="Split">Split</button>
         </form>
         <div id="split-result"></div>
       </section>
 
       <!-- 2. HEADERS -->
       <section id="headers" class="tool" hidden>
-        <header><h2>Security Headers Analyzer</h2><p>Paste the response headers of a site. Get them with <code>curl -sI https://example.com</code> or from your browser's DevTools → Network tab.</p></header>
+        <header><h2 data-i18n="Security Headers Analyzer">Security Headers Analyzer</h2><p data-i18n-html="headers.desc"></p></header>
         <div class="panel">
-          <label>Response headers<textarea id="headers-input" rows="9" spellcheck="false" placeholder="HTTP/2 200&#10;server: nginx/1.18.0&#10;content-type: text/html&#10;strict-transport-security: max-age=31536000"></textarea></label>
-          <div class="actions"><button id="headers-run">Analyze</button><button class="ghost" id="headers-sample" type="button">Load example</button></div>
+          <label><span data-i18n="Response headers">Response headers</span><textarea id="headers-input" rows="9" spellcheck="false" placeholder="HTTP/2 200&#10;server: nginx/1.18.0&#10;content-type: text/html&#10;strict-transport-security: max-age=31536000"></textarea></label>
+          <div class="actions"><button id="headers-run" data-i18n="Analyze">Analyze</button><button class="ghost" id="headers-sample" type="button" data-i18n="Load example">Load example</button></div>
         </div>
         <div id="headers-result"></div>
       </section>
 
       <!-- 3. PASSWORD -->
       <section id="password" class="tool" hidden>
-        <header><h2>Password Strength Checker</h2><p>The strength estimate runs locally. The breach check only sends the first 5 characters of the password's SHA-1 hash (k-anonymity), never the password itself.</p></header>
+        <header><h2 data-i18n="Password Strength Checker">Password Strength Checker</h2><p data-i18n="password.desc"></p></header>
         <div class="panel">
-          <label>Password<span class="row"><input id="pw-input" type="password" autocomplete="off" class="grow" /><button class="ghost" id="pw-toggle" type="button">Show</button></span></label>
+          <label for="pw-input" data-i18n="Password">Password</label>
+          <div class="row tight"><input id="pw-input" type="password" autocomplete="off" class="grow" /><button class="ghost" id="pw-toggle" type="button" data-i18n="Show">Show</button></div>
           <div class="meter" aria-hidden="true"><span id="pw-bar"></span></div>
           <div id="pw-result" aria-live="polite"></div>
-          <div class="actions"><button id="pw-pwned" type="button">Check known breaches</button></div>
+          <div class="actions"><button id="pw-pwned" type="button" data-i18n="Check known breaches">Check known breaches</button></div>
           <p id="pw-pwned-result" aria-live="polite"></p>
         </div>
       </section>
 
       <!-- 4. FIREWALL -->
       <section id="firewall" class="tool" hidden>
-        <header><h2>Firewall Rule Generator</h2><p>Default-deny inbound policy that allows only the services you select. Test from a console session, not only over SSH.</p></header>
+        <header><h2 data-i18n="Firewall Rule Generator">Firewall Rule Generator</h2><p data-i18n="firewall.desc"></p></header>
         <form class="panel" id="fw-form">
-          <fieldset><legend>Allowed services</legend><div class="checks" id="fw-services"></div></fieldset>
+          <fieldset><legend data-i18n="Allowed services">Allowed services</legend><div class="checks" id="fw-services"></div></fieldset>
           <div class="grid2">
-            <label>Restrict SSH to source (optional CIDR)<input id="fw-ssh-src" placeholder="192.168.1.0/24" /></label>
-            <label>Custom ports (e.g. <code>8080/tcp, 51820/udp</code>)<input id="fw-custom" placeholder="8080/tcp" /></label>
+            <label><span data-i18n="Restrict SSH to source (optional CIDR)">Restrict SSH to source (optional CIDR)</span><input id="fw-ssh-src" placeholder="192.168.1.0/24" /></label>
+            <label><span data-i18n-html="fw.custom"></span><input id="fw-custom" placeholder="8080/tcp" /></label>
           </div>
-          <label class="inline"><input type="checkbox" id="fw-icmp" checked /> Allow ping (ICMP echo)</label>
+          <label class="inline"><input type="checkbox" id="fw-icmp" checked /> <span data-i18n="Allow ping (ICMP echo)">Allow ping (ICMP echo)</span></label>
         </form>
         <p class="error" id="fw-error" role="alert"></p>
         <div class="tabs" role="tablist" id="fw-tabs">
@@ -107,29 +123,29 @@
           <button role="tab" data-fmt="nftables" aria-selected="false">nftables</button>
           <button role="tab" data-fmt="ufw" aria-selected="false">UFW</button>
         </div>
-        <div class="code-wrap"><pre id="fw-output"></pre><div class="code-actions"><button class="ghost" data-copy="fw-output">Copy</button><button class="ghost" id="fw-download">Download</button></div></div>
+        <div class="code-wrap"><pre id="fw-output"></pre><div class="code-actions"><button class="ghost" data-copy="fw-output" data-i18n="Copy">Copy</button><button class="ghost" id="fw-download" data-i18n="Download">Download</button></div></div>
       </section>
 
       <!-- 5. HARDENING -->
       <section id="hardening" class="tool" hidden>
-        <header><h2>Linux Hardening Audit</h2><p>Pick the checks, download the script and run it on your server. It is read-only: it reports findings and changes nothing.</p></header>
+        <header><h2 data-i18n="Linux Hardening Audit">Linux Hardening Audit</h2><p data-i18n="hardening.desc"></p></header>
         <div class="panel">
-          <fieldset><legend>Checks</legend><div class="checks" id="hd-checks"></div></fieldset>
+          <fieldset><legend data-i18n="Checks">Checks</legend><div class="checks" id="hd-checks"></div></fieldset>
         </div>
-        <div class="code-wrap"><pre id="hd-output"></pre><div class="code-actions"><button class="ghost" data-copy="hd-output">Copy</button><button class="ghost" id="hd-download">Download audit.sh</button></div></div>
-        <p class="hint">Run: <code>sudo bash audit.sh --html report.html</code> — prints coloured results and writes an HTML report.</p>
+        <div class="code-wrap"><pre id="hd-output"></pre><div class="code-actions"><button class="ghost" data-copy="hd-output" data-i18n="Copy">Copy</button><button class="ghost" id="hd-download" data-i18n="Download audit.sh">Download audit.sh</button></div></div>
+        <p class="hint" data-i18n-html="hardening.hint"></p>
       </section>
 
       <!-- 6. LOGS -->
       <section id="logs" class="tool" hidden>
-        <header><h2>Auth Log Analyzer</h2><p>Paste or open <code>/var/log/auth.log</code> (Debian/Ubuntu) or <code>/var/log/secure</code> (RHEL). The file is processed in your browser and never uploaded.</p></header>
+        <header><h2 data-i18n="Auth Log Analyzer">Auth Log Analyzer</h2><p data-i18n-html="logs.desc"></p></header>
         <div class="panel">
-          <label>Log content<textarea id="log-input" rows="9" spellcheck="false" placeholder="Nov 17 08:12:01 srv sshd[1234]: Failed password for root from 203.0.113.5 port 52144 ssh2"></textarea></label>
+          <label><span data-i18n="Log content">Log content</span><textarea id="log-input" rows="9" spellcheck="false" placeholder="Nov 17 08:12:01 srv sshd[1234]: Failed password for root from 203.0.113.5 port 52144 ssh2"></textarea></label>
           <div class="actions">
-            <label class="file-btn">Open file<input type="file" id="log-file" accept=".log,.txt,text/plain" /></label>
-            <label class="inline">Brute-force threshold <input type="number" id="log-threshold" min="1" value="5" class="small" /></label>
-            <button id="log-run">Analyze</button>
-            <button class="ghost" id="log-sample" type="button">Load example</button>
+            <label class="file-btn"><span data-i18n="Open file">Open file</span><input type="file" id="log-file" accept=".log,.txt,text/plain" /></label>
+            <label class="inline"><span data-i18n="Brute-force threshold">Brute-force threshold</span> <input type="number" id="log-threshold" min="1" value="5" class="small" inputmode="numeric" /></label>
+            <button id="log-run" data-i18n="Analyze">Analyze</button>
+            <button class="ghost" id="log-sample" type="button" data-i18n="Load example">Load example</button>
           </div>
         </div>
         <div id="log-result"></div>
@@ -137,28 +153,28 @@
 
       <!-- 7. MONITOR -->
       <section id="monitor" class="tool" hidden>
-        <header><h2>Uptime Monitor</h2><p>Check your services now from the browser, then generate a cron script that alerts you when one goes down.</p></header>
+        <header><h2 data-i18n="Uptime Monitor">Uptime Monitor</h2><p data-i18n="monitor.desc"></p></header>
         <div class="panel">
-          <label>URLs (one per line)<textarea id="mon-urls" rows="4" spellcheck="false">https://github.com
+          <label><span data-i18n="URLs (one per line)">URLs (one per line)</span><textarea id="mon-urls" rows="4" spellcheck="false">https://github.com
 https://example.com</textarea></label>
-          <div class="actions"><button id="mon-run">Check now</button></div>
-          <p class="hint">Browsers hide status codes from other sites, so this check shows whether a host answers, not whether it returns an error page. The generated script checks real HTTP status codes.</p>
+          <div class="actions"><button id="mon-run" data-i18n="Check now">Check now</button></div>
+          <p class="hint" data-i18n="monitor.hint"></p>
         </div>
         <div id="mon-result"></div>
         <div class="panel">
           <div class="grid2">
-            <label>Alert channel<select id="mon-channel"><option value="none">Log only</option><option value="discord">Discord webhook</option><option value="telegram">Telegram bot</option></select></label>
-            <label id="mon-discord-wrap" hidden>Discord webhook URL<input id="mon-discord" placeholder="https://discord.com/api/webhooks/…" /></label>
-            <label id="mon-tg-token-wrap" hidden>Telegram bot token<input id="mon-tg-token" placeholder="123456:ABC…" /></label>
-            <label id="mon-tg-chat-wrap" hidden>Telegram chat ID<input id="mon-tg-chat" placeholder="123456789" /></label>
+            <label><span data-i18n="Alert channel">Alert channel</span><select id="mon-channel"><option value="none" data-i18n="Log only">Log only</option><option value="discord" data-i18n="Discord webhook">Discord webhook</option><option value="telegram" data-i18n="Telegram bot">Telegram bot</option></select></label>
+            <label id="mon-discord-wrap" hidden><span data-i18n="Discord webhook URL">Discord webhook URL</span><input id="mon-discord" placeholder="https://discord.com/api/webhooks/…" /></label>
+            <label id="mon-tg-token-wrap" hidden><span data-i18n="Telegram bot token">Telegram bot token</span><input id="mon-tg-token" placeholder="123456:ABC…" /></label>
+            <label id="mon-tg-chat-wrap" hidden><span data-i18n="Telegram chat ID">Telegram chat ID</span><input id="mon-tg-chat" placeholder="123456789" /></label>
           </div>
-          <p class="hint">Tip: leave secrets empty here and export <code>DISCORD_WEBHOOK</code> or <code>TELEGRAM_TOKEN</code> on the server instead.</p>
+          <p class="hint" data-i18n-html="monitor.tip"></p>
         </div>
         <p class="error" id="mon-error" role="alert"></p>
-        <div class="code-wrap"><pre id="mon-output"></pre><div class="code-actions"><button class="ghost" data-copy="mon-output">Copy</button><button class="ghost" id="mon-download">Download monitor.sh</button></div></div>
+        <div class="code-wrap"><pre id="mon-output"></pre><div class="code-actions"><button class="ghost" data-copy="mon-output" data-i18n="Copy">Copy</button><button class="ghost" id="mon-download" data-i18n="Download monitor.sh">Download monitor.sh</button></div></div>
       </section>
 
-      <footer class="foot">Built by <a href="https://github.com/jheremysebastian17">Jheremy Sánchez</a> · <a href="https://github.com/jheremysebastian17/netsec-toolkit">Source on GitHub</a></footer>
+      <footer class="foot"><span data-i18n="Built by">Built by</span> <a href="https://github.com/jheremysebastian17">Jheremy Sánchez</a> · <a href="https://github.com/jheremysebastian17/netsec-toolkit" data-i18n="Source on GitHub">Source on GitHub</a></footer>
     </main>
   </div>
   <script type="module" src="js/app.js"></script>

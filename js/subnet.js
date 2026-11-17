@@ -81,7 +81,9 @@ export function calcIPv4(ip, prefix) {
 }
 
 export function splitIPv4(ip, prefix, newPrefix, limit = 256) {
-  if (newPrefix <= prefix || newPrefix > 32) throw new Error(`New prefix must be between /${prefix + 1} and /32`);
+  if (newPrefix <= prefix || newPrefix > 32 || !Number.isInteger(newPrefix)) {
+    throw Object.assign(new Error('New prefix must be between /{a} and /32'), { params: { a: prefix + 1 } });
+  }
   const network = (ip & maskFromPrefix(prefix)) >>> 0;
   const size = 2 ** (32 - newPrefix);
   const count = 2 ** (newPrefix - prefix);
